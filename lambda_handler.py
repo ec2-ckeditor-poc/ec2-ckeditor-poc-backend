@@ -22,7 +22,7 @@ def lambda_handler(event, context):
         print(e.response['Error']['Message'])
     else:
         new_visitor_count = response['Attributes']['visitor_count']
-        print(f'New visitor count: {new_visitor_count}')
+        print(f'New visitor count (pipeline commit): {new_visitor_count}')
         return {
             'statusCode': 200,
             'body': json.dumps({'visitor_count': int(new_visitor_count)}),

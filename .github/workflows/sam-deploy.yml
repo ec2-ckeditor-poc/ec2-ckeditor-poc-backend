@@ -1,0 +1,43 @@
+name: CI/CD SAM deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install SAM CLI
+        run: |
+          # Install SAM CLI
+          curl -L https://github.com/aws/aws-cli/archive/v2.tar.gz | tar -xz
+          sudo ./aws-cli-2/install
+          sudo ln -s /usr/local/bin/aws /usr/bin/aws
+          sudo apt-get update && sudo apt-get install -y zip unzip
+          sudo apt-get install -y jq python3-pip
+          pip3 install --user aws-sam-cli
+      
+      - name: Build and Test
+        run: |
+          sam build
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1 # Replace with your AWS region
+
+      - name: Upload to S3
+        run: sam deploy --stack-name sam-app
