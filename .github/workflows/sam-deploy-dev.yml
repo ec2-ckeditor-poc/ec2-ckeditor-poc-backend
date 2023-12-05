@@ -1,9 +1,9 @@
-name: CI/CD SAM deploy
+name: CI/CD SAM deploy development
 
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
   deploy:
@@ -34,4 +34,4 @@ jobs:
         run: |
           sam build --use-container
       # Prevent prompts and failure when the stack is unchanged
-      - run: sam deploy --config-env samconfig.toml --no-confirm-changeset --no-fail-on-empty-changeset
+      - run: sam deploy --config-env samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset
