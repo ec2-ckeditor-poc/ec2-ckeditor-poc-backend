@@ -4,8 +4,10 @@ from botocore.exceptions import ClientError
 
 def lambda_handler(event, context):
     # DynamoDB table name
-    table_name = 'VisitorCounter'
-    
+    # table_name = 'VisitorCounter'
+    table_name = os.environ.get('TABLE_NAME')
+    print(f'table name: {table_name}');
+
     # Create a DynamoDB client using boto3
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(table_name)
