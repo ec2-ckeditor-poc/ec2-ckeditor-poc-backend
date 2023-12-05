@@ -47,7 +47,7 @@ Resources:
           Properties:
             Path: /visitorCount
             Method: get
-            RestApiId: !If [IsProd, !Ref ApiGatewayProd, !Ref ApiGatewayDev]
+            RestApiId: !Ref ApiGateway
 
 Conditions:
   IsProd: !Equals [ !Ref Environment, "prod" ]
