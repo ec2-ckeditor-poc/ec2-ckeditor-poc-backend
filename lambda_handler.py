@@ -1,11 +1,14 @@
 import json
 import boto3
+import os;
 from botocore.exceptions import ClientError
 
 def lambda_handler(event, context):
     # DynamoDB table name
-    table_name = 'VisitorCounter'
-    
+    # table_name = 'VisitorCounter'
+    table_name = os.environ.get('TABLE_NAME')
+    print(f'table name: {table_name}');
+
     # Create a DynamoDB client using boto3
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(table_name)
@@ -22,7 +25,7 @@ def lambda_handler(event, context):
         print(e.response['Error']['Message'])
     else:
         new_visitor_count = response['Attributes']['visitor_count']
-        print(f'New visitor count (pipeline commit): {new_visitor_count}')
+        print(f'New visitor count: {new_visitor_count}')
         return {
             'statusCode': 200,
             'body': json.dumps({'visitor_count': int(new_visitor_count)}),

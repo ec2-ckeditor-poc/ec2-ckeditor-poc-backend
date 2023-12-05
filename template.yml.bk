@@ -2,19 +2,11 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: An AWS Serverless Specification for ckeditor-poc-backend
 
-Parameters:
-  Environment:
-    Type: String
-    AllowedValues:
-      - dev
-      - prod
-    Description: Environment for the stack
-
 Resources:
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !If [IsProd, VisitorCounterProd, VisitorCounterDev]
+      TableName: VisitorCounter
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: N
@@ -28,8 +20,8 @@ Resources:
   ApiGateway:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !If [IsProd, VisitorCounterAPIProd, VisitorCounterAPIDev]
-      StageName: !If [IsProd, prod, dev]
+      Name: VisitorCounterAPI
+      StageName: prod
       EndpointConfiguration: REGIONAL
 
   LambdaFunction:
@@ -48,6 +40,3 @@ Resources:
             Path: /visitorCount
             Method: get
             RestApiId: !Ref ApiGateway
-
-Conditions:
-  IsProd: !Equals [ !Ref Environment, "prod" ]

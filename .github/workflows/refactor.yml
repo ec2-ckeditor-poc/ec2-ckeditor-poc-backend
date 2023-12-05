@@ -1,0 +1,71 @@
+name: CI/CD SAM deploy
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  deploy_dev:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+      
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1 # Replace with your AWS region
+
+      - name: Build and Test for Dev
+        run: |
+          sam build --use-container --parameter-overrides Environment=dev
+      # Prevent prompts and failure when the stack is unchanged
+      - run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
+
+
+  deploy_prod:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+      
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1 # Replace with your AWS region
+
+      - name: Build and Test for Prod
+        run: |
+          sam build --use-container --parameter-overrides Environment=prod
+      # Prevent prompts and failure when the stack is unchanged
+      - run: sam deploy --config-file samconfig.toml--no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
