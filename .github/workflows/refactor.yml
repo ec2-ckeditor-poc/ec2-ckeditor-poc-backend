@@ -68,4 +68,4 @@ jobs:
         run: |
           sam build --use-container --parameter-overrides Environment=prod
       # Prevent prompts and failure when the stack is unchanged
-      - run: sam deploy --config-file samconfig.toml--no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
+      - run: sam deploy --config-file samconfig.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
