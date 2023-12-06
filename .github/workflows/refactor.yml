@@ -5,8 +5,8 @@ on:
     tags:
       - 'v*' # release to production, any tag follow this pattern.
     branches:
-      - master
-      - develop   
+      - master # will be used to deploy SIT build
+      - develop
 
 jobs:
   deploy_dev:
