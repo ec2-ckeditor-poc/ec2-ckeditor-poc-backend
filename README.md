@@ -5,4 +5,3 @@ This repository contains the backend code for the `ec2-ckeditor-poc` app. It inc
 - DynamoDB: Handles data storage, retrieval, and updating for the visitor counter.
 - API Gateway: Facilitates communication between the frontend and the Lambda function.
 - Lambda Function: Handles data retrieval and update operations for the visitor counter on DynamoDB.
-- .
