@@ -2,14 +2,17 @@ name: CI/CD SAM deploy
 
 on:
   push:
+    tags:
+      - 'v*' # release to production, any tag follow this pattern.
     branches:
-      - master
+      - master # will be used to deploy SIT build
       - develop
 
 jobs:
   deploy_dev:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
+
 
     steps:
       - name: Checkout code
@@ -41,7 +44,7 @@ jobs:
 
   deploy_prod:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref_type == 'tag'
     
     steps:
       - name: Checkout code
