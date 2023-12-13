@@ -70,5 +70,16 @@ jobs:
       - name: Build and Test for Prod
         run: |
           sam build --use-container --parameter-overrides Environment=prod
+      
+      - name: Zip build folder
+        run: zip -r build.zip .aws-sam/build
+      
+      - name: Publish release artifact to github release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build.zip
+
       # Prevent prompts and failure when the stack is unchanged
-      - run: sam deploy --config-file samconfig.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
+      - name: Sam deploying production
+        run: sam deploy --config-file samconfig.toml--no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
