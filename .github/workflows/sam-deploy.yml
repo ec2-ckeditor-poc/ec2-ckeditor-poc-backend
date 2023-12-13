@@ -11,7 +11,8 @@ on:
 jobs:
   deploy_dev:
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/develop' || github.ref_type == 'tag' }}
+    # if: github.ref == 'refs/heads/develop' 
+    if: github.ref_type == 'tag'
     permissions:
       contents: write
 
@@ -39,12 +40,20 @@ jobs:
       - name: Build and Test for Dev
         run: |
           sam build --use-container --parameter-overrides Environment=dev
-      - name: Release
+          
+      - name: Zip build folder
+        run: zip -r build.zip .aws-sam/build
+      
+      - name: Publish release artifact to github release
         uses: softprops/action-gh-release@v1
-        # if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          files:
-            Release.txt
+          files: build.zip
+
+      # Prevent prompts and failure when the stack is unchanged
+      - name: Sam deploying production
+        run: sam deploy --config-file samconfig.toml--no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
+
       # Prevent prompts and failure when the stack is unchanged
       # - run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
 
