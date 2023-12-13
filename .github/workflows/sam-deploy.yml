@@ -11,8 +11,7 @@ on:
 jobs:
   deploy_dev:
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/develop' 
-    if: github.ref_type == 'tag'
+    if: github.ref == 'refs/heads/develop'
     permissions:
       contents: write
 
