@@ -12,7 +12,8 @@ jobs:
   deploy_dev:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
-
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
