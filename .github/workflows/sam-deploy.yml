@@ -40,12 +40,12 @@ jobs:
           sam build --use-container --parameter-overrides Environment=dev
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        # if: startsWith(github.ref, 'refs/tags/')
         with:
           files:
             Release.txt
       # Prevent prompts and failure when the stack is unchanged
-      - run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
+      # - run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
 
 
   deploy_prod:
