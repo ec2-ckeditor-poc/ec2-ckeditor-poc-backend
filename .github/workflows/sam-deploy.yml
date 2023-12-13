@@ -40,7 +40,7 @@ jobs:
       - name: Build and Test for Dev
         run: |
           sam build --use-container --parameter-overrides Environment=dev
-          
+
       - name: Zip build folder
         run: zip -r build.zip .aws-sam/build
       
@@ -52,7 +52,7 @@ jobs:
 
       # Prevent prompts and failure when the stack is unchanged
       - name: Sam deploying production
-        run: sam deploy --config-file samconfig.toml--no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
+        run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
 
       # Prevent prompts and failure when the stack is unchanged
       # - run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
