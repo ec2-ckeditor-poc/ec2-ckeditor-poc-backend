@@ -35,7 +35,8 @@ jobs:
           pytest --cov-report term --cov-report xml:coverage.xml --cov=math_operations && coverage html
 
       - name: Check test status
-        run: exit $(($? == 0 ? 0 : 1))
+        if: ${{failure()}}
+        run: exit 1
 
   deploy_dev:
     runs-on: ubuntu-latest
