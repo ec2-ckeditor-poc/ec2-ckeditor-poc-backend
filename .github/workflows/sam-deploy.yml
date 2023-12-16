@@ -9,12 +9,40 @@ on:
       - develop
 
 jobs:
+  run_unit_tests:
+    name: Run Unit Test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Assuming you have a requirements.txt file
+      
+      - name: Test with pytest
+        run: |
+          pip install pytest pytest-cov
+          pytest --cov-report term --cov-report xml:coverage.xml --cov=math_operations && coverage html
+
+      - name: Check test status
+        run: exit $(($? == 0 ? 0 : 1))
+
   deploy_dev:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     permissions:
       contents: write
-
+    needs: run_unit_tests
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -52,10 +80,6 @@ jobs:
       # Prevent prompts and failure when the stack is unchanged
       - name: Sam deploying production
         run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
-
-      # Prevent prompts and failure when the stack is unchanged
-      # - run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
-
 
   # deploy_prod:
   #   runs-on: ubuntu-latest

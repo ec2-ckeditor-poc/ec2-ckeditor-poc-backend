@@ -1,1 +1,11 @@
+# Sam build ouput
 .aws-sam
+
+# python catching
+**/**/__pycache__
+
+# Testing ouput
+junit
+htmlcov
+.coverage
+coverage.xml
