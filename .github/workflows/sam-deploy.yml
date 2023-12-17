@@ -64,9 +64,6 @@ jobs:
           echo "Coverage percentage set as : ${{vars.COVERAGE_PERCENTAGE}}%"
           pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=${{vars.COVERAGE_PERCENTAGE}} && coverage html
 
-      # - name: Check test status
-      #   if: ${{failure()}}
-      #   run: exit 1
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with: 
@@ -121,44 +118,47 @@ jobs:
       - name: Sam deploying production
         run: sam deploy --config-file samconfig-dev.toml --no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=dev
 
-  # deploy_prod:
-  #   runs-on: ubuntu-latest
-  #   if: github.ref_type == 'tag'
+  deploy_prod:
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'
+    permissions:
+      contents: write
+    needs: run_unit_tests
     
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.x
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
 
-  #     - name: Install SAM CLI
-  #       uses: aws-actions/setup-sam@v2
-  #       with:
-  #         use-installer: true
+      - name: Install SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
       
-  #     - name: Set up AWS CLI
-  #       uses: aws-actions/configure-aws-credentials@v2
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-  #         aws-region: us-east-1 # Replace with your AWS region
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1 # Replace with your AWS region
 
-  #     - name: Build and Test for Prod
-  #       run: |
-  #         sam build --use-container --parameter-overrides Environment=prod
+      - name: Build and Test for Prod
+        run: |
+          sam build --use-container --parameter-overrides Environment=prod
       
-  #     - name: Zip build folder
-  #       run: zip -r build.zip .aws-sam/build
+      - name: Zip build folder
+        run: zip -r build.zip .aws-sam/build
       
-  #     - name: Publish release artifact to github release
-  #       uses: softprops/action-gh-release@v1
-  #       if: startsWith(github.ref, 'refs/tags/')
-  #       with:
-  #         files: build.zip
+      - name: Publish release artifact to github release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build.zip
 
-  #     # Prevent prompts and failure when the stack is unchanged
-  #     - name: Sam deploying production
-  #       run: sam deploy --config-file samconfig.toml--no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
+      # Prevent prompts and failure when the stack is unchanged
+      - name: Sam deploying production
+        run: sam deploy --config-file samconfig.toml--no-confirm-changeset --no-fail-on-empty-changeset --parameter-overrides Environment=prod
