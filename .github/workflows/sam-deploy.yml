@@ -60,7 +60,7 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
-          echo "My job name : ${{ vars.JOB_NAME }}"
+          echo "My job name : ${{ vars.DEVELOPMENT }}"
           pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=int($env_var.COVERAGE_PERCENTAGE) && coverage html
 
       # - name: Check test status
