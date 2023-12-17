@@ -7,6 +7,8 @@ on:
     branches:
       # - master # will be used to deploy SIT build
       - develop
+env:
+  ENV_VARS_DEVELOPMENT: ${{ vars.DEVELOPMENT }}
 
 jobs:
   run_unit_tests:
@@ -34,8 +36,9 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
-          echo "Coverage percentage is $COVERAGE_PERCENTAGE"
-          pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=int($COVERAGE_PERCENTAGE) && coverage html
+          echo "Coverage percentage is ${{vars.COVERAGE_PERCENTAGE}}"
+          echo "Variable from shell environment : $env_var"
+          pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=int($env_var) && coverage html
 
       # - name: Check test status
       #   if: ${{failure()}}
