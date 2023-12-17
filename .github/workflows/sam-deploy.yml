@@ -8,7 +8,7 @@ on:
       # - master # will be used to deploy SIT build
       - develop
 env:
-  env_var: ${{ vars.DEVELOPMENT }}
+  env_var: TEST
 
 jobs:
   # display-variables:
@@ -38,6 +38,7 @@ jobs:
   run_unit_tests:
     name: Run Unit Test
     runs-on: ubuntu-latest
+    environment: "DEVELOPMENT"
     permissions:
       contents: read
 
@@ -60,7 +61,8 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
-          echo "My job name : ${{ vars.DEVELOPMENT }}"
+          echo "My workflow variable : $env_var"
+          echo "My JOB_NAME variable : ${{vars.JOB_NAME}}"
           pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=int($env_var.COVERAGE_PERCENTAGE) && coverage html
 
       # - name: Check test status
