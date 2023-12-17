@@ -34,7 +34,7 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
-          pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=30 && coverage html
+          pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=60 && coverage html
 
       # - name: Check test status
       #   if: ${{failure()}}
