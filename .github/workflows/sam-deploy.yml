@@ -38,7 +38,7 @@ jobs:
   run_unit_tests:
     name: Run Unit Test
     runs-on: ubuntu-latest
-    environment: "DEVELOPMENT"
+    environment: DEVELOPMENT
     permissions:
       contents: read
 
@@ -61,9 +61,8 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
-          echo "My workflow variable : $env_var"
-          echo "My JOB_NAME variable : ${{vars.JOB_NAME}}"
-          pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=int($env_var.COVERAGE_PERCENTAGE) && coverage html
+          echo "Coverage percentage set as : ${{vars.COVERAGE_PERCENTAGE}}%"
+          pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=int(${{vars.COVERAGE_PERCENTAGE}}) && coverage html
 
       # - name: Check test status
       #   if: ${{failure()}}
