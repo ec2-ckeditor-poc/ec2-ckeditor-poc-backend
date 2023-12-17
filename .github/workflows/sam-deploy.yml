@@ -37,7 +37,7 @@ jobs:
         run: |
           pip install pytest pytest-cov
           echo "Coverage percentage is ${{vars.COVERAGE_PERCENTAGE}}"
-          echo "Variable from shell environment : $env_var"
+          echo "Variable from shell environment : $ENV_VARS_DEVELOPMENT"
           pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=int($env_var) && coverage html
 
       # - name: Check test status
