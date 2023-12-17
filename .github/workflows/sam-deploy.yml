@@ -43,9 +43,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with: 
           name: test-results
-          path: |
-            junit/coverage.xml
-            htmlcov
+          path:
+            htmlcov/**/*.*
           # Run this step to publish test results when there are test failures
         if: ${{always()}}
 
