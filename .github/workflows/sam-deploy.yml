@@ -44,7 +44,7 @@ jobs:
         with: 
           name: test-results
           path:
-            htmlcov/**/*.*
+            htmlcov/**
           # Run this step to publish test results when there are test failures
         if: ${{always()}}
 
