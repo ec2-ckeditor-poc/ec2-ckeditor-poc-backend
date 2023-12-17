@@ -29,14 +29,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt  # Assuming you have a requirements.txt file
       
+      # It run all tests under ./tests path output report to `./coverage.xml` and html report in ./htmlcov
+      # --cov=. is to track coverage for all module
       - name: Test with pytest
         run: |
           pip install pytest pytest-cov
-          pytest --cov-report term --cov-report xml:coverage.xml --cov=math_operations && coverage html
+          pytest --cov-report term --cov-report xml:junit/coverage.xml --cov=. --cov-fail-under=30 && coverage html
 
-      - name: Check test status
-        if: ${{failure()}}
-        run: exit 1
+      # - name: Check test status
+      #   if: ${{failure()}}
+      #   run: exit 1
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v3
+        with: 
+          name: coverage.xml
+          path: junit/coverage.xml
+          # Run this step to publish test results when there are test failures
+          if: ${{always()}}
 
   deploy_dev:
     runs-on: ubuntu-latest
